@@ -1,4 +1,3 @@
-//your code here
 const images = [
   "https://picsum.photos/id/237/200/300",
   "https://picsum.photos/seed/picsum/200/300",
@@ -7,61 +6,69 @@ const images = [
   "https://picsum.photos/200/300.jpg",
 ];
 
-let suffledImage = [];
-let selectedImage = [];
+let shuffledImages = [];
+let selectedImages = [];
 
-function suffledImages() {
-  let tempImage = [...images];
-  let duplicateImage = tempImage[Math.floor(Math.random() * tempImage.length)];
-  tempImage.push(duplicateImage);
-  suffledImage = tempImage.sort(() => Math.random() - 0.5);
+function shuffleImages() {
+  let tempImages = [...images];
+  let duplicateImage =
+    tempImages[Math.floor(Math.random() * tempImages.length)];
+  tempImages.push(duplicateImage); // Ensure only one duplicate
+  shuffledImages = tempImages.sort(() => Math.random() - 0.5);
 }
 
-function displayImage() {
+function displayImages() {
   const container = document.getElementById("imageContainer");
   container.innerHTML = "";
-  suffledImage.forEach((src, index) => {
+  shuffledImages.forEach((src, index) => {
     const img = document.createElement("img");
     img.src = src;
-    img.setAttribute("data-index", index);
+    img.classList.add("image-tile");
+    img.setAttribute("data-src", src); // Use data attribute for comparison
     img.addEventListener("click", () => selectImage(img));
     container.appendChild(img);
   });
 }
-function selectImage(img) {
-  if (selectedImage.length < 2 && !selectedImage.includes(img)) {
-    img.classList.add("selected"); // Highlight selected image
-    selectedImage.push(img); // Store selected image
-    document.getElementById("reset").style.display = "inline"; // Show Reset button
 
-    if (selectedImage.length === 2) {
-      document.getElementById("verify").style.display = "inline"; // Show Verify button
+function selectImage(img) {
+  if (selectedImages.length < 2 && !selectedImages.includes(img)) {
+    img.classList.add("selected");
+    selectedImages.push(img);
+    document.getElementById("reset").style.display = "inline";
+
+    if (selectedImages.length === 2) {
+      document.getElementById("verify").style.display = "inline";
     }
   }
 }
 
 function verifySelection() {
   let msg = "";
+  let firstImageSrc = selectedImages[0].getAttribute("data-src");
+  let secondImageSrc = selectedImages[1].getAttribute("data-src");
 
-  if (selectedImage[0].src === selectedImage[1].src) {
+  if (firstImageSrc === secondImageSrc) {
     msg = "You are a human. Congratulations!";
   } else {
     msg =
       "We can't verify you as a human. You selected the non-identical tiles.";
   }
+
   document.getElementById("para").innerText = msg;
   document.getElementById("verify").style.display = "none";
 }
 
-function reset() {
-  selectedImage = [];
+function resetGame() {
+  selectedImages = [];
   document.getElementById("reset").style.display = "none";
   document.getElementById("verify").style.display = "none";
   document.getElementById("para").innerText = "";
-  suffledImages();
-  displayImage();
+  shuffleImages();
+  displayImages();
 }
-suffledImages();
-displayImage();
+
+// Initialize game
+shuffleImages();
+displayImages();
 document.getElementById("verify").addEventListener("click", verifySelection);
-document.getElementById("reset").addEventListener("click", reset);
+document.getElementById("reset").addEventListener("click", resetGame);
