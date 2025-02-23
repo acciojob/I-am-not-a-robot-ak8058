@@ -23,7 +23,7 @@ function displayImages() {
   shuffledImages.forEach((src, index) => {
     const img = document.createElement("img");
     img.src = src;
-    img.classList.add("image-tile");
+    img.classList.add(`img${index + 1}`);
     img.setAttribute("data-src", src); // Use data attribute for comparison
     img.addEventListener("click", () => selectImage(img));
     container.appendChild(img);
